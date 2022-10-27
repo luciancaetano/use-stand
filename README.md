@@ -1,4 +1,4 @@
-# use-stand the useState with steroids
+# use-stand the useState with steroids :wip:
 
 A small, fast local state-management solution using simplified redux/flux principles.
 
