@@ -1,7 +1,6 @@
-# use-stand aka ___useState with steroids___
+# use-stand the useState with steroids
 
 A small, fast local state-management solution using simplified redux/flux principles.
-__useState with steroids.__
 
 ## Why?
 
