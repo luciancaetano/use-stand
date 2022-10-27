@@ -1,6 +1,6 @@
 {
   "name": "use-stand",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "source": "src/index.ts",
   "main": "dist/index.min.js",
   "types": "dist/types/index.d.ts",
