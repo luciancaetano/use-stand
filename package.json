@@ -1,0 +1,99 @@
+{
+  "name": "use-stand",
+  "version": "5.0.3",
+  "source": "src/index.ts",
+  "main": "dist/index.min.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "description": "A small, fast local state-management solution using simplified redux/flux principles or useState with steroids.",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --mode production && npm run types",
+    "types": "tsc src/index.ts --declaration --allowJs --emitDeclarationOnly --outDir dist/types --esModuleInterop --jsx react --skipLibCheck",
+    "lint": "eslint ./src --ext .tsx --ext .ts --max-warnings=0 --fix",
+    "release:minor": "standard-version --release-as minor && npm run build && git push --follow-tags origin main && npm publish",
+    "release:major": "standard-version --release-as major && npm run build && git push --follow-tags origin main && npm publish",
+    "release:patch": "standard-version --release-as patch && npm run build && git push --follow-tags origin main && npm publish",
+    "release:pre": "standard-version --prerelease && npm run build && git push --follow-tags origin main && npm publish --tag next",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luciancaetano/use-stand.git"
+  },
+  "keywords": [
+    "react",
+    "state",
+    "manager",
+    "management",
+    "useState",
+    "redux",
+    "store"
+  ],
+  "author": "Lucian Caetano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luciancaetano/use-stand/issues"
+  },
+  "homepage": "https://github.com/luciancaetano/use-stand#readme",
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "engines": {
+    "node": ">=12.7.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-object-rest-spread": "^7.19.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/plugin-transform-typescript": "^7.19.3",
+    "@babel/preset-env": "^7.19.4",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@types/react": "^18.0.23",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "babel-loader": "^8.2.5",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.26.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "standard-version": "^9.5.0",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.ts?(x)": [
+      "eslint",
+      "jest --bail --findRelatedTests",
+      "git add"
+    ]
+  },
+  "gacp": {
+    "push": true,
+    "emoji": "code"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  }
+}
