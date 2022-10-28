@@ -16,7 +16,7 @@ module.exports = {
     filename: 'index.min.js',
     path: path.join(__dirname, 'dist'),
     library: {
-      name: 'use-stand',
+      name: 'usestand',
       type: 'umd',
     },
   },
