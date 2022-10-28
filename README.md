@@ -4,7 +4,7 @@ A small, fast local state-management solution using simplified redux/flux princi
 
 ## Why?
 
-Redux is a great library, but it's a bit too much for some projects. This library is a simplified version of redux/fux.
+Redux is a great library, but it's a bit too much for some projects. This library is a simplified version of redux/flux.
 
 ### Installation
 
@@ -106,3 +106,7 @@ const useStand = create((store) =>({
     },
 }));
 ```
+
+### Need a global state library ?
+
+The design of library useStand is based on the library [zustand](https://github.com/pmndrs/zustand), zustand can handle global state, but useStand is simpler and focused on managing local state as a gormetized useState.
