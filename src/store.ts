@@ -45,7 +45,11 @@ class Store<S> implements StateApi<S> {
   };
 
   use = (middleware: Middleware<S>) => {
-    if (this.middlewares.indexOf(middleware) === -1) {
+    const index = this.middlewares.findIndex((m) => m.name === middleware.name);
+
+    if (index > -1) {
+      this.middlewares[index] = middleware;
+    } else {
       this.middlewares.push(middleware);
     }
   };
