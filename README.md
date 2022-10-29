@@ -9,13 +9,13 @@ Redux is a great library, but it's a bit too much for some projects. This librar
 ### Installation
 
 ```bash
-npm install usestand # or yarn add usestand
+npm install use-stand # or yarn add use-stand
 ```
 
 ### Create a store
 
 ```javascript
-import create from 'usestand';
+import create from 'use-stand';
 
 const useStand = create((store) =>({
     count: 0,
@@ -48,7 +48,7 @@ function Counter() {
 Typescript usage is very simples, just add the type of your state to the create function.
 
 ```typescript
-import create from 'usestand';
+import create from 'use-stand';
 
 interface State {
     count: number;
@@ -68,7 +68,7 @@ const useStand = create<State>((store) =>({
 ``store.setState`` can receive a callback with the current state as parameter, or you can use store to get the current state.
 
 ```javascript
-import create from 'usestand';
+import create from 'use-stand';
 
 const useStand = create((store) =>({
     count: 0,
@@ -81,7 +81,7 @@ const useStand = create((store) =>({
 ### Async actions
 
 ```javascript
-import create from 'usestand';
+import create from 'use-stand';
 
 const useStand = create((store) =>({
     count: 0,
@@ -98,7 +98,7 @@ The setState function has a second parameter to override the state, this is usef
 **Attention this will not override the functions in the state, so you can't override automaticaly the actions.**
 
 ```javascript
-import create from 'usestand';
+import create from 'use-stand';
 
 const useStand = create((store) =>({
     count: 0,

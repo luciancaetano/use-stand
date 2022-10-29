@@ -184,33 +184,33 @@ describe('Store', () => {
     store.use(testMiddleWare);
 
     store.getState().increment();
-    expect(store.middlewareConfig.getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
+    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
   });
 
   test('should use middleware with config and replace', () => {
     store.use(testMiddleWare);
 
     store.getState().increment();
-    expect(store.middlewareConfig.getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
+    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
 
-    store.middlewareConfig.setMiddlewareConfig('testMiddleWare', 'configTest', '456');
-    expect(store.middlewareConfig.getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('456');
+    store.getMiddlewareConfig().setMiddlewareConfig('testMiddleWare', 'configTest', '456');
+    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('456');
   });
 
   test('should use middleware with config and clear', () => {
     store.use(testMiddleWare);
 
     store.getState().increment();
-    expect(store.middlewareConfig.getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
+    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
 
     store.use(clearSettingsMiddleware);
 
-    expect(store.middlewareConfig.getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
+    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
 
     store.getState().increment();
 
-    store.middlewareConfig.clearMiddlewareConfig('testMiddleWare');
-    expect(store.middlewareConfig.getMiddlewareConfig('testMiddleWare', 'configTest')).toBe(undefined);
+    store.getMiddlewareConfig().clearMiddlewareConfig('testMiddleWare');
+    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe(undefined);
   });
 
   // replace state and check if actions is still working

@@ -12,7 +12,7 @@ class StandApiImpl<S> implements StandApi<S> {
 
   private middlewareConfigStore: MiddlewareConfigStore = new MiddlewareConfigStore();
 
-  public get middlewareConfig(): MiddlewareConfigStore {
+  public getMiddlewareConfig(): MiddlewareConfigStore {
     return this.middlewareConfigStore;
   }
 
