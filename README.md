@@ -1,4 +1,4 @@
-# useStand the useState with steroids :wip:
+# Welcome to useStand the useState with steroids
 
 A small, fast local state-management solution using simplified redux/flux principles.
 
@@ -241,3 +241,8 @@ function Counter() {
 }
 
 ```
+
+## Builtin Middlewares 🚧(WIP)
+
+- [] Builtin persistence middleware
+- [] Builtin logger middleware

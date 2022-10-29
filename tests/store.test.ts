@@ -1,5 +1,5 @@
-import StandApiImpl from '../src/api';
-import { Middleware } from '../src/types';
+import StandApiImpl from '../src/core/api';
+import { Middleware } from '../src/core/types';
 
 interface CounterState {
   counter: number;
