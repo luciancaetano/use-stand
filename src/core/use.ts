@@ -46,8 +46,6 @@ export function useStandContext<S, U>(
 
     return () => {
       unsubscribe();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      store.destroy();
     };
   }, [store]);
 
