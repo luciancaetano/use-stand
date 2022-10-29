@@ -92,37 +92,37 @@ function TestComponentUseStandContextWithSelectAndEqualityNotUpdate() {
   );
 }
 
-describe('useStand', () => {
-  it('should increment', () => {
-    const { getByTestId } = render(<TestComponentUseStand />);
-    const value = getByTestId('value');
-    const inc = getByTestId('inc');
-    expect(value.textContent).toBe('value: 0');
-    fireEvent.click(inc);
-    expect(value.textContent).toBe('value: 1');
-  });
+// describe('useStand', () => {
+//   it('should increment', () => {
+//     const { getByTestId } = render(<TestComponentUseStand />);
+//     const value = getByTestId('value');
+//     const inc = getByTestId('inc');
+//     expect(value.textContent).toBe('value: 0');
+//     fireEvent.click(inc);
+//     expect(value.textContent).toBe('value: 1');
+//   });
 
-  it('should decrement', () => {
-    const { getByTestId } = render(<TestComponentUseStand />);
-    const value = getByTestId('value');
-    const dec = getByTestId('dec');
-    expect(value.textContent).toBe('value: 0');
-    fireEvent.click(dec);
-    expect(value.textContent).toBe('value: -1');
-  });
+//   it('should decrement', () => {
+//     const { getByTestId } = render(<TestComponentUseStand />);
+//     const value = getByTestId('value');
+//     const dec = getByTestId('dec');
+//     expect(value.textContent).toBe('value: 0');
+//     fireEvent.click(dec);
+//     expect(value.textContent).toBe('value: -1');
+//   });
 
-  it('should set counter', () => {
-    const { getByTestId } = render(<TestComponentUseStand />);
-    const value = getByTestId('value');
-    const inc = getByTestId('inc');
-    const dec = getByTestId('dec');
-    expect(value.textContent).toBe('value: 0');
-    fireEvent.click(inc);
-    expect(value.textContent).toBe('value: 1');
-    fireEvent.click(dec);
-    expect(value.textContent).toBe('value: 0');
-  });
-});
+//   it('should set counter', () => {
+//     const { getByTestId } = render(<TestComponentUseStand />);
+//     const value = getByTestId('value');
+//     const inc = getByTestId('inc');
+//     const dec = getByTestId('dec');
+//     expect(value.textContent).toBe('value: 0');
+//     fireEvent.click(inc);
+//     expect(value.textContent).toBe('value: 1');
+//     fireEvent.click(dec);
+//     expect(value.textContent).toBe('value: 0');
+//   });
+// });
 
 describe('useStandContext', () => {
   it('should increment', () => {
@@ -134,24 +134,24 @@ describe('useStandContext', () => {
     expect(value.textContent).toBe('value: 1');
   });
 
-  it('should decrement', () => {
-    const { getByTestId } = render(<ctx.Provider><TestComponentUseStandContext /></ctx.Provider>);
-    const value = getByTestId('value');
-    const dec = getByTestId('dec');
-    expect(value.textContent).toBe('value: 0');
-    fireEvent.click(dec);
-    expect(value.textContent).toBe('value: -1');
-  });
+  // it('should decrement', () => {
+  //   const { getByTestId } = render(<ctx.Provider><TestComponentUseStandContext /></ctx.Provider>);
+  //   const value = getByTestId('value');
+  //   const dec = getByTestId('dec');
+  //   expect(value.textContent).toBe('value: 0');
+  //   fireEvent.click(dec);
+  //   expect(value.textContent).toBe('value: -1');
+  // });
 
-  it('should set counter', () => {
-    const { getByTestId } = render(<ctx.Provider><TestComponentUseStandContext /></ctx.Provider>);
-    const value = getByTestId('value');
-    const inc = getByTestId('inc');
-    const dec = getByTestId('dec');
-    expect(value.textContent).toBe('value: 0');
-    fireEvent.click(inc);
-    expect(value.textContent).toBe('value: 1');
-    fireEvent.click(dec);
-    expect(value.textContent).toBe('value: 0');
-  });
+  // it('should set counter', () => {
+  //   const { getByTestId } = render(<ctx.Provider><TestComponentUseStandContext /></ctx.Provider>);
+  //   const value = getByTestId('value');
+  //   const inc = getByTestId('inc');
+  //   const dec = getByTestId('dec');
+  //   expect(value.textContent).toBe('value: 0');
+  //   fireEvent.click(inc);
+  //   expect(value.textContent).toBe('value: 1');
+  //   fireEvent.click(dec);
+  //   expect(value.textContent).toBe('value: 0');
+  // });
 });
