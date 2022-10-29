@@ -16,7 +16,7 @@ interface CounterState {
   decrementUsingStateApi: () => void;
 }
 
-const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partial, replace) => {
+const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partial) => {
   config.setMiddlewareConfig('testMiddleWare', 'configTest', '123');
 
   if (typeof partial === 'function') {
@@ -26,12 +26,12 @@ const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partia
         ...newState,
         middlewareWorks: true,
       };
-    }, replace);
+    });
   }
   return next({
     ...partial,
     middlewareWorks: true,
-  }, replace);
+  });
 };
 
 const initializer: StoreInitializer<CounterState> = ({ setState, getState }) => ({

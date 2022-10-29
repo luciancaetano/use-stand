@@ -1,6 +1,6 @@
 {
-  "name": "use-stand",
-  "version": "1.0.2-alpha.4",
+  "name": "usestand",
+  "version": "1.0.3",
   "source": "src/index.ts",
   "main": "dist/index.min.js",
   "types": "dist/types/index.d.ts",
@@ -35,9 +35,9 @@
   "author": "Lucian Caetano",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/luciancaetano/use-stand/issues"
+    "url": "https://github.com/luciancaetano/usestand/issues"
   },
-  "homepage": "https://github.com/luciancaetano/use-stand#readme",
+  "homepage": "https://github.com/luciancaetano/usestand#readme",
   "peerDependencies": {
     "react": ">=16.8.0"
   },

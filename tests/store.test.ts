@@ -12,14 +12,15 @@ interface CounterState {
   decrementAsync: () => Promise<void>;
   incrementUsingStateApi: () => void;
   decrementUsingStateApi: () => void;
+  resetState: () => void;
 }
 
-const clearSettingsMiddleware: Middleware<CounterState> = (_, config) => (next) => (partial, replace) => {
+const clearSettingsMiddleware: Middleware<CounterState> = (_, config) => (next) => (partial) => {
   config.clearMiddlewareConfig('testMiddleWare');
-  return next(partial, replace);
+  return next(partial);
 };
 
-const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partial, replace) => {
+const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partial) => {
   config.setMiddlewareConfig('testMiddleWare', 'configTest', '123');
 
   if (typeof partial === 'function') {
@@ -29,39 +30,40 @@ const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partia
         ...newState,
         middlewareWorks: true,
       };
-    }, replace);
+    });
   }
   return next({
     ...partial,
     middlewareWorks: true,
-  }, replace);
+  });
 };
 
 describe('Store', () => {
   let store: StandApiImpl<CounterState>;
 
   beforeEach(() => {
-    store = new StandApiImpl<CounterState>((s) => ({
+    store = new StandApiImpl<CounterState>(({ setState, getState, getInitialState }) => ({
       counter: 0,
       middlewareWorks: false,
-      increment: () => s.setState((state) => ({ counter: state.counter + 1 })),
-      decrement: () => s.setState((state) => ({ counter: state.counter - 1 })),
-      incrementBy: (amount: number) => s.setState((state) => ({ counter: state.counter + amount })),
-      decrementBy: (amount: number) => s.setState((state) => ({ counter: state.counter - amount })),
+      increment: () => setState((state) => ({ counter: state.counter + 1 })),
+      decrement: () => setState((state) => ({ counter: state.counter - 1 })),
+      incrementBy: (amount: number) => setState((state) => ({ counter: state.counter + amount })),
+      decrementBy: (amount: number) => setState((state) => ({ counter: state.counter - amount })),
       incrementAsync: async () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
-        s.setState((state) => ({ counter: state.counter + 1 }));
+        setState((state) => ({ counter: state.counter + 1 }));
       },
       decrementAsync: async () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
-        s.setState((state) => ({ counter: state.counter - 1 }));
+        setState((state) => ({ counter: state.counter - 1 }));
       },
-      incrementUsingStateApi: () => s.setState({
-        counter: s.getState().counter + 1,
+      incrementUsingStateApi: () => setState({
+        counter: getState().counter + 1,
       }),
-      decrementUsingStateApi: () => s.setState({
-        counter: s.getState().counter - 1,
+      decrementUsingStateApi: () => setState({
+        counter: getState().counter - 1,
       }),
+      resetState: () => setState(getInitialState()),
     }));
   });
 
@@ -77,6 +79,7 @@ describe('Store', () => {
       decrementAsync: expect.any(Function),
       incrementUsingStateApi: expect.any(Function),
       decrementUsingStateApi: expect.any(Function),
+      resetState: expect.any(Function),
     });
   });
 
@@ -164,15 +167,6 @@ describe('Store', () => {
     expect(mock).toBeCalledTimes(0);
   });
 
-  test('should replace state', () => {
-    store.getState().increment();
-    expect(store.getState().counter).toBe(1);
-
-    store.setState({ counter: 5 }, true);
-    expect(store.getState().counter).toBe(5);
-    expect(store.getState().middlewareWorks).toBe(undefined);
-  });
-
   test('should use middleware', () => {
     store.use(testMiddleWare);
 
@@ -187,7 +181,7 @@ describe('Store', () => {
     expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
   });
 
-  test('should use middleware with config and replace', () => {
+  test('should use middleware with config an', () => {
     store.use(testMiddleWare);
 
     store.getState().increment();
@@ -213,41 +207,71 @@ describe('Store', () => {
     expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe(undefined);
   });
 
-  // replace state and check if actions is still working
-
-  test('should replace state and check if actions is still working', async () => {
+  test('should state and check if actions is still working', async () => {
     store.getState().increment();
     expect(store.getState().counter).toBe(1);
 
-    store.setState({ counter: 5 }, true);
-    expect(store.getState().counter).toBe(5);
-    expect(store.getState().middlewareWorks).toBe(undefined);
-
     store.getState().increment();
-    expect(store.getState().counter).toBe(6);
+    expect(store.getState().counter).toBe(2);
 
     store.getState().decrement();
-    expect(store.getState().counter).toBe(5);
+    expect(store.getState().counter).toBe(1);
 
     store.getState().incrementBy(10);
-    expect(store.getState().counter).toBe(15);
+    expect(store.getState().counter).toBe(11);
 
-    store.getState().decrementBy(5);
-    expect(store.getState().counter).toBe(10);
+    store.getState().decrementBy(8);
+    expect(store.getState().counter).toBe(3);
 
     store.getState().incrementUsingStateApi();
-    expect(store.getState().counter).toBe(11);
+    expect(store.getState().counter).toBe(4);
 
     store.getState().decrementUsingStateApi();
-    expect(store.getState().counter).toBe(10);
+    expect(store.getState().counter).toBe(3);
 
     await store.getState().incrementAsync();
-    expect(store.getState().counter).toBe(11);
+    expect(store.getState().counter).toBe(4);
 
     await store.getState().decrementAsync();
-    expect(store.getState().counter).toBe(10);
+    expect(store.getState().counter).toBe(3);
 
     store.getState().increment();
+    expect(store.getState().counter).toBe(4);
+  });
+
+  test('should reset state', async () => {
+    store.getState().increment();
+    expect(store.getState().counter).toBe(1);
+
+    store.getState().increment();
+    expect(store.getState().counter).toBe(2);
+
+    store.getState().decrement();
+    expect(store.getState().counter).toBe(1);
+
+    store.getState().incrementBy(10);
     expect(store.getState().counter).toBe(11);
+
+    store.getState().decrementBy(8);
+    expect(store.getState().counter).toBe(3);
+
+    store.getState().incrementUsingStateApi();
+    expect(store.getState().counter).toBe(4);
+
+    store.getState().decrementUsingStateApi();
+    expect(store.getState().counter).toBe(3);
+
+    await store.getState().incrementAsync();
+    expect(store.getState().counter).toBe(4);
+
+    await store.getState().decrementAsync();
+    expect(store.getState().counter).toBe(3);
+
+    store.getState().increment();
+    expect(store.getState().counter).toBe(4);
+
+    store.getState().resetState();
+
+    expect(store.getState().counter).toBe(0);
   });
 });

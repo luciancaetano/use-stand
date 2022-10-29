@@ -1,10 +1,13 @@
+import { cloneObject } from './helpers';
 import MiddlewareConfigStore from './middlewareSettingsStore';
 import {
-  Middleware, SetStateFn, StandApi,
+  Middleware, SetStateFn, StandApi, Store,
 } from './types';
 
 class StandApiImpl<S> implements StandApi<S> {
   private state: S;
+
+  public initialState: S;
 
   private middlewares: Middleware<S>[] = [];
 
@@ -16,21 +19,20 @@ class StandApiImpl<S> implements StandApi<S> {
     return this.middlewareConfigStore;
   }
 
-  constructor(initializer: (store: StandApiImpl<S>) => S) {
-    this.state = initializer(this);
+  constructor(initializer: (store: Store<S>) => S) {
+    this.state = initializer({
+      getState: this.getState,
+      setState: this.setState,
+      getInitialState: () => this.initialState,
+    });
+    // clone state to initial state
+    this.initialState = cloneObject(this.state);
   }
 
   public getState = () => this.state;
 
-  public setState: SetStateFn<S> = (partial, replace) => {
+  public setState: SetStateFn<S> = (partial) => {
     const prevState = this.state;
-
-    const actions = Object.keys(this.state as Object).reduce((acc, key) => {
-      if (typeof (this.state as any)[key] === 'function') {
-        (acc as any)[key] = (this.state as any)[key];
-      }
-      return acc;
-    }, {} as Partial<S>);
 
     const partialValue = typeof partial === 'function' ? (partial as any)(this.state) : partial;
 
@@ -38,10 +40,10 @@ class StandApiImpl<S> implements StandApi<S> {
       this.middlewares.forEach((middleware) => {
         const middlewareApi = middleware(this, this.middlewareConfigStore);
         const setState = middlewareApi(this.silentSetState);
-        setState(partialValue, replace);
+        setState(partialValue);
       });
     } else {
-      this.state = replace ? { ...partialValue, ...actions } : { ...this.state, ...partialValue, ...actions };
+      this.state = { ...this.state, ...partialValue };
     }
 
     this.listeners.forEach((listener) => listener(this.state, prevState));
@@ -52,17 +54,10 @@ class StandApiImpl<S> implements StandApi<S> {
   /**
    * Set state without triggering listeners or middlewares
    */
-  private silentSetState: SetStateFn<S> = (partial, replace) => {
+  private silentSetState: SetStateFn<S> = (partial) => {
     const partialValue = typeof partial === 'function' ? (partial as any)(this.state) : partial;
 
-    const actions = Object.keys(this.state as Object).reduce((acc, key) => {
-      if (typeof (this.state as any)[key] === 'function') {
-        (acc as any)[key] = (this.state as any)[key];
-      }
-      return acc;
-    }, {} as Partial<S>);
-
-    this.state = replace ? { ...partialValue, ...actions } : { ...this.state, ...partialValue, ...actions };
+    this.state = { ...this.state, ...partialValue };
 
     return this.state;
   };

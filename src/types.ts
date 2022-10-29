@@ -2,11 +2,14 @@ import { ReactNode } from 'react';
 import MiddlewareConfigStore from './middlewareSettingsStore';
 
 export type SetStateFn<S> = (
-  partial: S | Partial<S> | ((state: S) => S | Partial<S>),
-  replace?: boolean
+  partial: S | Partial<S> | ((state: S) => S | Partial<S>)
 ) => S;
 
 export interface StandApi<S> {
+  /**
+   * Initial state
+   */
+  initialState: S;
   /**
    * Get the current state
    */
@@ -34,7 +37,20 @@ export interface StandApi<S> {
   use: (middleware: Middleware<S>) => void;
 }
 
-export type Store<S> = Pick<StandApi<S>, 'getState' | 'setState'>;
+export interface Store<S> {
+  /**
+   * Get the current state
+   */
+  getState: () => S;
+  /**
+      * Set the state
+      * @param partial Partial state or a function that returns a partial state
+      * @param replace Replace the state instead of merging it
+      */
+  setState: SetStateFn<S>;
+
+  getInitialState: () => S;
+}
 
 export interface StoreInitializer<S> {
   (store: Store<S>): S;
