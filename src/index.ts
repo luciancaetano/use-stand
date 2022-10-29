@@ -1,5 +1,6 @@
 export { default, createStandContext } from './create';
-export { useStandContext } from './use';
+export { shallowCompare } from './helpers';
 export type {
-  EqualityFn, Middleware, StoreInitializer, SetStateFn, StandApi, Store, MiddlewareConfigStoreType,
+  EqualityFn, Middleware, StoreInitializer, SetStateFn, Store, MiddlewareConfigStoreType,
+  ProviderComponent, UseBoundedStandContext, UseStandContext, BoundedUseStand,
 } from './types';

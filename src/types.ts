@@ -1,7 +1,10 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import MiddlewareConfigStore from './middlewareSettingsStore';
 
-export type SetStateFn<S> = (partial: S | Partial<S> | ((state: S) => S | Partial<S>), replace?: boolean) => S;
+export type SetStateFn<S> = (
+  partial: S | Partial<S> | ((state: S) => S | Partial<S>),
+  replace?: boolean
+) => S;
 
 export interface StandApi<S> {
   /**
@@ -31,14 +34,16 @@ export interface StandApi<S> {
   use: (middleware: Middleware<S>) => void;
 }
 
-export type Store<S> = Pick<StandApi<S>, 'getState' | 'setState' >;
+export type Store<S> = Pick<StandApi<S>, 'getState' | 'setState'>;
 
 export interface StoreInitializer<S> {
   (store: Store<S>): S;
 }
 
 export interface Middleware<S = any> {
-  (store: StandApi<S>, settings: MiddlewareConfigStoreType): (setState: SetStateFn<S>) => SetStateFn<S>;
+  (store: StandApi<S>, settings: MiddlewareConfigStoreType): (
+    setState: SetStateFn<S>
+  ) => SetStateFn<S>;
 }
 
 export interface EqualityFn<S> {
@@ -47,8 +52,19 @@ export interface EqualityFn<S> {
 
 export type MiddlewareConfigStoreType = MiddlewareConfigStore;
 
-interface ProviderProps {
-  children?: ReactNode | undefined;
+export interface ProviderComponent {
+  (props: { children: ReactNode }): JSX.Element;
 }
 
-export type UseStandContext<S> = Omit<React.Context<StandApi<S>>, 'Provider'> & {Provider: React.ProviderExoticComponent<ProviderProps>};
+export interface UseBoundedStandContext<S> {
+  <U>(selector: (state: S) => U, equalityFn?: EqualityFn<U>): U;
+  (): S;
+}
+
+export interface BoundedUseStand<S> {
+  (equalityFn?: EqualityFn<S>): S;
+}
+export type UseStandContext<S> = [
+  UseBoundedStandContext<S>,
+  ProviderComponent
+];

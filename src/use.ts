@@ -1,17 +1,31 @@
 /* eslint-disable no-redeclare */
 /* eslint-disable default-param-last */
 import React, { useEffect, useRef, useState } from 'react';
-import { EqualityFn, UseStandContext } from './types';
+import StandApiImpl from './api';
+import { shallowCompare } from './helpers';
+import {
+  EqualityFn, Middleware, StandApi, StoreInitializer,
+} from './types';
 
 const DEFAULT_SELECTOR: any = (state: any) => state;
 
-export function useStandContext<S>(context: UseStandContext<S>): S;
-export function useStandContext<S, U>(context: UseStandContext<S>, selector: (state: S) => U, equalityFn?: EqualityFn<U>): U;
+export function useStandContext<S>(
+  context: React.Context<StandApi<S>>
+): S;
+export function useStandContext<S, U>(
+  context: React.Context<StandApi<S>>,
+  selector: (state: S) => U,
+  equalityFn?: EqualityFn<U>
+): U;
 
-export function useStandContext<S, U>(context: UseStandContext<S>, selector: (state: S) => U = DEFAULT_SELECTOR, equalityFn?: EqualityFn<U>): U {
+export function useStandContext<S, U>(
+  context: React.Context<StandApi<S>>,
+  selector: (state: S) => U = DEFAULT_SELECTOR,
+  equalityFn: EqualityFn<U> = shallowCompare,
+): U {
   const store = React.useContext(context);
   const [, setUpdate] = useState({});
-  const equalityFnRef = useRef<EqualityFn<U> | undefined>(equalityFn);
+  const equalityFnRef = useRef<EqualityFn<U>>(equalityFn);
   const selectorRef = useRef<((state: S) => U) | undefined>(selector);
 
   useEffect(() => {
@@ -23,13 +37,11 @@ export function useStandContext<S, U>(context: UseStandContext<S>, selector: (st
   }, [selector]);
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      if (equalityFnRef.current) {
-        const state: U = selectorRef.current ? selectorRef.current(store.getState()) as U : store.getState() as unknown as U;
-        if (!equalityFnRef.current(state, selectorRef.current ? selectorRef.current(store.getState()) as U : store.getState() as unknown as U)) {
-          setUpdate({});
-        }
-      } else {
+    const unsubscribe = store.subscribe((state, prevState) => {
+      const selected = selectorRef.current ? selectorRef.current(state) : state;
+      const prevSelected = selectorRef.current ? selectorRef.current(prevState) : prevState;
+
+      if (!(equalityFnRef.current as any)(selected, prevSelected)) {
         setUpdate({});
       }
     });
@@ -41,7 +53,43 @@ export function useStandContext<S, U>(context: UseStandContext<S>, selector: (st
     };
   }, [store]);
 
-  const state = selectorRef.current ? selectorRef.current(store.getState()) : store.getState();
+  const state = selectorRef.current
+    ? selectorRef.current(store.getState())
+    : store.getState();
 
   return state as U;
+}
+
+export function useStand<S>(initializer: StoreInitializer<S>, middlewares?: Middleware<S>[], equalityFn: EqualityFn<S> = shallowCompare): S {
+  const [, setUpdate] = useState({});
+  const store = useRef<StandApiImpl<S>>(new StandApiImpl(initializer));
+  const equalityFnRef = useRef<EqualityFn<S>>(equalityFn);
+
+  useEffect(() => {
+    equalityFnRef.current = equalityFn;
+  }, [equalityFn]);
+
+  useEffect(() => {
+    middlewares?.forEach((middleware) => {
+      store.current.use(middleware);
+    });
+  }, [middlewares]);
+
+  useEffect(() => {
+    const unsubscribe = store.current.subscribe((state, prevState) => {
+      if (!equalityFnRef.current(state, prevState)) {
+        setUpdate({});
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      store.current.destroy();
+    };
+  }, []);
+
+  const state = store.current.getState();
+
+  return state;
 }
