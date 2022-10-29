@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash.clonedeep';
+
 export function shallowCompare<A, B>(a: A | B, b: B | A): boolean {
   if (a === b) {
     return true;
@@ -26,8 +28,8 @@ export function shallowCompare<A, B>(a: A | B, b: B | A): boolean {
   return true;
 }
 
-export function cloneObject(obj: any) {
-  return JSON.parse(JSON.stringify(obj));
+export function cloneObject<T>(obj: T): T {
+  return cloneDeep(obj);
 }
 
 export const DEFAULT_SELECTOR: any = (state: any) => state;
