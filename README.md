@@ -1,6 +1,6 @@
 # Welcome to useStand the useState with steroids
 
-A small, fast local state-management solution using simplified redux/flux principles.
+A small, fast local/context state-management solution using simplified redux/flux principles.
 
 ## Why?
 
