@@ -29,7 +29,9 @@
     "esModuleInterop": true,
     "declarationMap": true,
     "types": [
-      "@types/node"
+      "@types/node",
+      "jest",
+      "@testing-library/jest-dom"
     ]
   },
   "include": [

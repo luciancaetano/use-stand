@@ -94,6 +94,7 @@ const useStand = create((store) =>({
 
 ### Overriding state
 The setState function has a second parameter to override the state, this is useful when you want to set the state with a new value.
+**[Typescript Warning]** This will not merge the state, it will override it.
 **Attention this will not override the functions in the state, so you can't override automaticaly the actions.**
 
 ```javascript
@@ -106,7 +107,3 @@ const useStand = create((store) =>({
     },
 }));
 ```
-
-### Need a global state library ?
-
-The design of library useStand is based on the library [zustand](https://github.com/pmndrs/zustand), zustand can handle global state, but useStand is simpler and focused on managing local state as a gormetized useState.

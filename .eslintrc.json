@@ -29,6 +29,7 @@
   },
   "rules": {
     "no-restricted-exports": "off",
+    "no-restricted-syntax": "off",
     "import/no-unresolved": "off",
     "@typescript-eslint/naming-convention": [
       "error",

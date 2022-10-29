@@ -1,18 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import Store from './store';
-import { EqualityFn, Middleware, StoreInitializer } from './types';
-
-export interface StateApi<S> {
-  getState: () => S;
-  setState: (partial: S | Partial<S> | ((state: S) => S | Partial<S>), replace?: boolean) => S;
-  subscribe: (listener: (state: S, prevState: S) => void) => () => void;
-  destroy: () => void;
-}
+import React, { useEffect, useRef, useState } from 'react';
+import StandApiImpl from './api';
+import { createProvider } from './provider';
+import {
+  EqualityFn, Middleware, StandApi, StoreInitializer, UseStandContext,
+} from './types';
 
 function create<S>(initializer: StoreInitializer<S>, middlewares?: Middleware<S>[]) {
   function useStore(equalityFn?: EqualityFn<S>) {
     const [, setUpdate] = useState({});
-    const store = useRef<Store<S>>(new Store(initializer));
+    const store = useRef<StandApiImpl<S>>(new StandApiImpl(initializer));
     const equalityFnRef = useRef<EqualityFn<S> | undefined>(equalityFn);
 
     useEffect(() => {
@@ -53,3 +49,22 @@ function create<S>(initializer: StoreInitializer<S>, middlewares?: Middleware<S>
 }
 
 export default create;
+
+export function createStandContext<S>(initializer: StoreInitializer<S>, middlewares?: Middleware<S>[]): UseStandContext<S> {
+  const store = new StandApiImpl(initializer);
+
+  middlewares?.forEach((middleware) => {
+    store.use(middleware);
+  });
+
+  const ctx = React.createContext<StandApi<S>>(store);
+
+  const Provider = createProvider(ctx, store);
+
+  Object.defineProperty(ctx, 'Provider', {
+    value: Provider,
+    writable: false,
+  });
+
+  return ctx as UseStandContext<S>;
+}
