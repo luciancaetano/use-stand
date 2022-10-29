@@ -58,7 +58,7 @@ describe('Store', () => {
         setState((state) => ({ counter: state.counter - 1 }));
       },
       incrementUsingStateApi: () => setState({
-        counter: getState().counter + 1,
+        counter: getState((s) => s.counter) + 1,
       }),
       decrementUsingStateApi: () => setState({
         counter: getState().counter - 1,

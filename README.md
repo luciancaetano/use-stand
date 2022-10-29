@@ -78,6 +78,20 @@ const useStand = create(({getState, setState}) =>({
 
 ```
 
+### Reading state in actions using selector
+``setState`` can receive a callback with a parameter that is a selector function. This selector function will receive the current state and return the value you want to use in the action.
+
+```javascript
+import create from 'usestand';
+
+const useStand = create(({getState, setState}) =>({
+    count: 0,
+    inc: () => setState(state => ({ count: getState(s => s.count) + 1})),
+    dec: () => setState(state => ({ count: getState(s => s.count) - 1})),
+}));
+
+```
+
 ### Async actions
 
 ```javascript

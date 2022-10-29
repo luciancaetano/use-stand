@@ -1,6 +1,7 @@
 import { cloneObject } from './helpers';
 import MiddlewareConfigStore from './middlewareSettingsStore';
 import {
+  GetStateFn,
   Middleware, SetStateFn, StandApi, Store,
 } from './types';
 
@@ -29,7 +30,12 @@ class StandApiImpl<S> implements StandApi<S> {
     this.initialState = cloneObject(this.state);
   }
 
-  public getState = () => this.state;
+  public getState: GetStateFn<S> = (selector = undefined as any) => {
+    if (selector) {
+      return selector(this.state);
+    }
+    return this.state;
+  };
 
   public setState: SetStateFn<S> = (partial) => {
     const prevState = this.state;

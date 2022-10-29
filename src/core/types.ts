@@ -5,6 +5,10 @@ export type SetStateFn<S> = (
   partial: S | Partial<S> | ((state: S) => S | Partial<S>)
 ) => S;
 
+export interface GetStateFn<S> {
+  (): S;
+  <U>(selector: (state: S) => U): U;
+}
 export interface StandApi<S> {
   /**
    * Initial state
@@ -13,7 +17,7 @@ export interface StandApi<S> {
   /**
    * Get the current state
    */
-  getState: () => S;
+  getState: GetStateFn<S>;
   /**
    * Set the state
    * @param partial Partial state or a function that returns a partial state
@@ -41,7 +45,7 @@ export interface Store<S> {
   /**
    * Get the current state
    */
-  getState: () => S;
+  getState: GetStateFn<S>;
   /**
       * Set the state
       * @param partial Partial state or a function that returns a partial state

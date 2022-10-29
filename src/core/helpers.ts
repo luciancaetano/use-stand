@@ -29,3 +29,5 @@ export function shallowCompare<A, B>(a: A | B, b: B | A): boolean {
 export function cloneObject(obj: any) {
   return JSON.parse(JSON.stringify(obj));
 }
+
+export const DEFAULT_SELECTOR: any = (state: any) => state;

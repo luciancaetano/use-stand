@@ -2,12 +2,10 @@
 /* eslint-disable default-param-last */
 import React, { useEffect, useRef, useState } from 'react';
 import StandApiImpl from './api';
-import { shallowCompare } from './helpers';
+import { DEFAULT_SELECTOR, shallowCompare } from './helpers';
 import {
   EqualityFn, Middleware, StandApi, StoreInitializer,
 } from './types';
-
-const DEFAULT_SELECTOR: any = (state: any) => state;
 
 export function useStandContext<S>(
   context: React.Context<StandApi<S>>
