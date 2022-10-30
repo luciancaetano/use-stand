@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import MiddlewareConfigStore from './middlewareSettingsStore';
 
 export type SetStateFn<S> = (
   partial: S | Partial<S> | ((state: S) => S | Partial<S>)
@@ -61,16 +60,14 @@ export interface StoreInitializer<S> {
 }
 
 export interface Middleware<S = any> {
-  (store: StandApi<S>, settings: MiddlewareConfigStoreType): (
-    setState: SetStateFn<S>
+  (store: StandApi<S>): (
+    next: SetStateFn<S>
   ) => SetStateFn<S>;
 }
 
 export interface EqualityFn<S> {
   (state: S, prevState: S): boolean;
 }
-
-export type MiddlewareConfigStoreType = MiddlewareConfigStore;
 
 export interface ProviderComponent {
   (props: { children: ReactNode }): JSX.Element;

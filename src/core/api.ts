@@ -1,12 +1,11 @@
 import { cloneObject } from './helpers';
-import MiddlewareConfigStore from './middlewareSettingsStore';
 import {
   GetStateFn,
   Middleware, SetStateFn, StandApi, Store,
 } from './types';
 
 class StandApiImpl<S> implements StandApi<S> {
-  private state: S;
+  private state: S = {} as S;
 
   public initialState: S;
 
@@ -14,19 +13,14 @@ class StandApiImpl<S> implements StandApi<S> {
 
   private listeners: Set<(state: S, prevState: S) => void> = new Set();
 
-  private middlewareConfigStore: MiddlewareConfigStore = new MiddlewareConfigStore();
-
-  public getMiddlewareConfig(): MiddlewareConfigStore {
-    return this.middlewareConfigStore;
-  }
-
   constructor(initializer: (store: Store<S>) => S) {
     this.state = initializer({
       getState: this.getState,
       setState: this.setState,
       getInitialState: () => this.initialState,
     });
-    // clone state to initial state
+
+    // clone the initial state
     this.initialState = cloneObject(this.state);
   }
 
@@ -44,7 +38,7 @@ class StandApiImpl<S> implements StandApi<S> {
 
     if (this.middlewares.length > 0) {
       this.middlewares.forEach((middleware) => {
-        const middlewareApi = middleware(this, this.middlewareConfigStore);
+        const middlewareApi = middleware(this);
         const setState = middlewareApi(this.silentSetState);
         setState(partialValue);
       });

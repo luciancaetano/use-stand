@@ -15,33 +15,31 @@ interface CounterState {
   resetState: () => void;
 }
 
-const clearSettingsMiddleware: Middleware<CounterState> = (_, config) => (next) => (partial) => {
-  config.clearMiddlewareConfig('testMiddleWare');
-  return next(partial);
-};
-
-const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partial) => {
-  config.setMiddlewareConfig('testMiddleWare', 'configTest', '123');
-
-  if (typeof partial === 'function') {
-    return next((state) => {
-      const newState = partial(state);
-      return {
-        ...newState,
-        middlewareWorks: true,
-      };
-    });
-  }
-  return next({
-    ...partial,
-    middlewareWorks: true,
-  });
-};
-
 describe('Store', () => {
   let store: StandApiImpl<CounterState>;
+  let testMiddleWare:Middleware<CounterState>;
+  let testMiddleWareValidator: string | null = null;
 
   beforeEach(() => {
+    testMiddleWareValidator = null;
+    testMiddleWare = () => (next) => (partial) => {
+      testMiddleWareValidator = 'testMiddleWare';
+
+      if (typeof partial === 'function') {
+        return next((state) => {
+          const newState = partial(state);
+          return {
+            ...newState,
+            middlewareWorks: true,
+          };
+        });
+      }
+      return next({
+        ...partial,
+        middlewareWorks: true,
+      });
+    };
+
     store = new StandApiImpl<CounterState>(({ setState, getState, getInitialState }) => ({
       counter: 0,
       middlewareWorks: false,
@@ -171,40 +169,7 @@ describe('Store', () => {
     store.use(testMiddleWare);
 
     store.getState().increment();
-    expect(store.getState().middlewareWorks).toBe(true);
-  });
-
-  test('should use middleware with config', () => {
-    store.use(testMiddleWare);
-
-    store.getState().increment();
-    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
-  });
-
-  test('should use middleware with config an', () => {
-    store.use(testMiddleWare);
-
-    store.getState().increment();
-    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
-
-    store.getMiddlewareConfig().setMiddlewareConfig('testMiddleWare', 'configTest', '456');
-    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('456');
-  });
-
-  test('should use middleware with config and clear', () => {
-    store.use(testMiddleWare);
-
-    store.getState().increment();
-    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
-
-    store.use(clearSettingsMiddleware);
-
-    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe('123');
-
-    store.getState().increment();
-
-    store.getMiddlewareConfig().clearMiddlewareConfig('testMiddleWare');
-    expect(store.getMiddlewareConfig().getMiddlewareConfig('testMiddleWare', 'configTest')).toBe(undefined);
+    expect(testMiddleWareValidator).toBe('testMiddleWare');
   });
 
   test('should state and check if actions is still working', async () => {

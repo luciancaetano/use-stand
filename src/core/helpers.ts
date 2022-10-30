@@ -1,4 +1,6 @@
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash/cloneDeep';
+
+export const DEFAULT_SELECTOR: any = (state: any) => state;
 
 export function shallowCompare<A, B>(a: A | B, b: B | A): boolean {
   if (a === b) {
@@ -32,4 +34,13 @@ export function cloneObject<T>(obj: T): T {
   return cloneDeep(obj);
 }
 
-export const DEFAULT_SELECTOR: any = (state: any) => state;
+export type Full<T> = {
+  [P in keyof T]-?: T[P];
+};
+
+export function runAsync(callback: () => void) {
+  return new Promise<void>((resolve) => {
+    callback();
+    resolve();
+  });
+}

@@ -16,9 +16,7 @@ interface CounterState {
   decrementUsingStateApi: () => void;
 }
 
-const testMiddleWare:Middleware<CounterState> = (_, config) => (next) => (partial) => {
-  config.setMiddlewareConfig('testMiddleWare', 'configTest', '123');
-
+const testMiddleWare:Middleware<CounterState> = () => (next) => (partial) => {
   if (typeof partial === 'function') {
     return next((state) => {
       const newState = partial(state);
